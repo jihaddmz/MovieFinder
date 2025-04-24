@@ -8,12 +8,15 @@ import likedMovieAction from "../state/actions/likedMovieAction.ts";
 import {AppDispatch, RootState} from "../state/store.ts";
 import fetchFavoritesAction from "../state/actions/fetchFavoritesAction.ts";
 import fetchMoviesAction from "../state/actions/fetchMoviesAction.ts";
+import {useNavigate} from "react-router-dom";
 
 const Home = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
     const {likedMovies} = useSelector((state: RootState) => state.likes);
     const {movies, featured, loading, error} = useSelector((state: RootState) => state.movies);
     const [search, setSearch] = useState("");
+    const [prevSearch, setPrevSearch] = useState("");
 
     useEffect(() => {
         if (movies.length === 0) {
@@ -26,21 +29,24 @@ const Home = () => {
     }, [])
 
     useEffect(() => {
-        if (error)
-            alert(error);
-    }, [error])
+        if (error) {
+            // alert(error);
+            navigate("/error", {state: {statusCode: 500, message: error}});
+        }
+    }, [error, navigate])
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             if (search)
                 dispatch(fetchMoviesAction(search));
-            else {
+            else if (prevSearch) { // ensuring that this call happens only when the user has searched before, so we reset the data state
                 dispatch(fetchMoviesAction(""));
             }
+            setPrevSearch(search);
         }, 700)
 
         return () => clearTimeout(timeoutId);
-    }, [search])
+    }, [search, dispatch])
 
     return (
         <div className="relative">

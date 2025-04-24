@@ -2,6 +2,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Home from "./pages/Home.tsx";
 import Favorites from "./pages/Favorites.tsx";
 import Layout from "./pages/Layout.tsx";
+import Error from "./pages/Error.tsx";
 
 function App() {
 
@@ -11,7 +12,7 @@ function App() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home/>}/>
                     <Route path="favorites" element={<Favorites/>}/>
-                    <Route path="*" element={<p>No Page Found</p>}/>
+                    <Route path="*" element={<Error />}/>
                 </Route>
             </Routes>
         </BrowserRouter>
