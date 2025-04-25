@@ -5,6 +5,6 @@ import {authMiddleWare} from "../middlewares/authMiddleWare";
 const router = Router();
 
 // router.get("/", saveMoviesToDB);
-router.get("/", authMiddleWare, fetchMovies);
+router.get("/", fetchMovies);
 
 export default router;
