@@ -1,11 +1,13 @@
 import {configureStore} from "@reduxjs/toolkit";
 import likesSlice from "./slices/likesSlice.ts";
 import moviesSlice from "./slices/moviesSlice.ts";
+import authSlice from "./slices/authSlice.ts";
 
 const store = configureStore({
     reducer: {
         likes: likesSlice,
-        movies: moviesSlice
+        movies: moviesSlice,
+        auth: authSlice
     }
 })
 

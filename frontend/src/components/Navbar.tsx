@@ -1,9 +1,11 @@
-import {Film, Heart, Menu, X} from "lucide-react";
+import {CircleUserRound, Film, Heart, Menu, X} from "lucide-react";
 import {useState} from "react";
 import {Link, useLocation} from "react-router-dom";
+import AuthModal from "./AuthModal.tsx";
 
 const Navbar = () => {
     const [mobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
+    const [isAuthModalVisible, setAuthModalVisibility] = useState(false)
     const {pathname} = useLocation();
 
     return (
@@ -29,19 +31,27 @@ const Navbar = () => {
                 </div>
 
                 {/*    Desktop navbar*/}
-                <div className="hidden md:flex justify-end">
-                    <nav className="flex items-center">
+                <div className="hidden md:flex justify-end items-center gap-4">
+                    <nav className="flex items-center gap-4">
                         <Link to="/"
                               className={`${pathname === "/" ? "text-white" : "text-gray-400"} hover:text-primary`}>Home</Link>
                         <Link to="#"
-                              className={`${pathname === "/new" ? "text-white" : "text-gray-400"} ms-4 hover:text-primary`}>New</Link>
+                              className={`${pathname === "/new" ? "text-white" : "text-gray-400"} hover:text-primary`}>New</Link>
                         <Link to="#"
-                              className={`${pathname === "/popular" ? "text-white" : "text-gray-400"} ms-4 hover:text-primary`}>Popular</Link>
+                              className={`${pathname === "/popular" ? "text-white" : "text-gray-400"} hover:text-primary`}>Popular</Link>
                     </nav>
                     <Link to="/favorites">
                         <Heart
-                            className={`${pathname === "/favorites" ? "text-white" : "text-gray-400"} hover:text-primary cursor-pointer ms-4`}/>
+                            className={`${pathname === "/favorites" ? "text-white" : "text-gray-400"} hover:text-primary cursor-pointer`}/>
                     </Link>
+                    <button
+                        onClick={() => {
+                            setMobileMenuIsOpen(false);
+                            setAuthModalVisibility(true);
+                        }}
+                        className="text-white flex bg-primary justify-center items-center py-2 rounded-xl px-10 cursor-pointer hover:bg-primary/80">
+                        <CircleUserRound className="me-2"/>Sign In
+                    </button>
                 </div>
             </div>
 
@@ -52,8 +62,20 @@ const Navbar = () => {
                         <Link to="/" className="text-white block border-b py-3">Home</Link>
                         <Link to="#" className="text-white block border-b py-3">New</Link>
                         <Link to="#" className="text-white block border-b py-3">Popular</Link>
+                        <button
+                            onClick={() => {
+                                setMobileMenuIsOpen(false);
+                                setAuthModalVisibility(true);
+                            }}
+                            className="text-white flex bg-primary min-w-full justify-center items-center mt-3 py-2 rounded-lg">
+                            <CircleUserRound className="me-2"/>Sign In
+                        </button>
                     </nav>
                 </div>
+            )}
+
+            {isAuthModalVisible && (
+                <AuthModal onClose={() => setAuthModalVisibility(false)}/>
             )}
 
         </div>

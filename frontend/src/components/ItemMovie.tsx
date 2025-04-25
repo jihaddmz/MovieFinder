@@ -18,7 +18,7 @@ const ItemMovie = ({movie, isFavorite, onLikeClick}: Props) => {
                      className="w-full h-72 duration-500 group-hover:scale-110 transition-transform"/>
 
                 {/* The like icon */}
-                <div className="z-10 absolute top-0 right-0 m-2 bg-[rgba(107,114,128,0.5)] rounded-full p-1 cursor-pointer"
+                <div className="absolute top-0 right-0 m-2 bg-[rgba(107,114,128,0.5)] rounded-full p-1 cursor-pointer"
                      onClick={(e) => {
                          console.log("movie clicked", e.screenX, e.screenY);
                          onLikeClick(movie, isFavorite ? LikedMovieActionType.Delete : LikedMovieActionType.Save, {x: e.clientX, y: e.clientY});
