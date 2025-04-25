@@ -5,8 +5,9 @@ import CustomError from "../types/CustomError";
 export const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
     try {
         const authHeader = req.headers.authorization;
-        if (!authHeader?.startsWith("Bearer ")) {
+        if (!authHeader?.startsWith("Bearer ") || !authHeader) {
             res.status(401).json({message: "No token provided"});
+            return;
         }
 
         const token = authHeader?.split(" ")[1];
