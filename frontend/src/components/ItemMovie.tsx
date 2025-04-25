@@ -6,7 +6,7 @@ import {LikedMovieActionType} from "../state/actions/likedMovieAction.ts";
 interface Props {
     movie: Movie;
     isFavorite: boolean;
-    onLikeClick: (movie: Movie, actionType: LikedMovieActionType) => void;
+    onLikeClick: (movie: Movie, actionType: LikedMovieActionType, position: {x: number, y: number}) => void;
 }
 
 const ItemMovie = ({movie, isFavorite, onLikeClick}: Props) => {
@@ -19,8 +19,9 @@ const ItemMovie = ({movie, isFavorite, onLikeClick}: Props) => {
 
                 {/* The like icon */}
                 <div className="z-10 absolute top-0 right-0 m-2 bg-[rgba(107,114,128,0.5)] rounded-full p-1 cursor-pointer"
-                     onClick={() => {
-                         onLikeClick(movie, isFavorite ? LikedMovieActionType.Delete : LikedMovieActionType.Save);
+                     onClick={(e) => {
+                         console.log("movie clicked", e.screenX, e.screenY);
+                         onLikeClick(movie, isFavorite ? LikedMovieActionType.Delete : LikedMovieActionType.Save, {x: e.clientX, y: e.clientY});
                      }}>
                     <Heart fill={`${isFavorite ? "#7C3AED" : "transparent"}`}
                            className={`${isFavorite ? "text-primary" : "text-white"}`}/>

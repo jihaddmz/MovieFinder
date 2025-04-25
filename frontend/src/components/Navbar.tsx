@@ -7,7 +7,7 @@ const Navbar = () => {
     const {pathname} = useLocation();
 
     return (
-        <div className="min-w-full sticky top-0 z-10">
+        <div className="min-w-full sticky top-0 z-10 navbar">
 
             <div className="flex items-center justify-between shadow-lg p-5">
                 <div className="flex items-center">
@@ -18,7 +18,8 @@ const Navbar = () => {
                 {/*Mobile Navbar*/}
                 <div className="flex items-center md:hidden">
                     <Link to="/favorites">
-                        <Heart className={`${pathname === "/favorites" ? "text-white" : "text-gray-400"} hover:text-primary cursor-pointer`}/>
+                        <Heart id={"navbarHeart"}
+                               className={`${pathname === "/favorites" ? "text-white" : "text-gray-400"} hover:text-primary cursor-pointer`}/>
                     </Link>
                     {mobileMenuIsOpen ? <X className="text-white ms-8 cursor-pointer"
                                            onClick={() => setMobileMenuIsOpen(false)}/> :
@@ -30,12 +31,16 @@ const Navbar = () => {
                 {/*    Desktop navbar*/}
                 <div className="hidden md:flex justify-end">
                     <nav className="flex items-center">
-                        <Link to="/" className={`${pathname === "/" ? "text-white" : "text-gray-400"} hover:text-primary`}>Home</Link>
-                        <Link to="#" className={`${pathname === "/new" ? "text-white" : "text-gray-400"} ms-4 hover:text-primary`}>New</Link>
-                        <Link to="#" className={`${pathname === "/popular" ? "text-white" : "text-gray-400"} ms-4 hover:text-primary`}>Popular</Link>
+                        <Link to="/"
+                              className={`${pathname === "/" ? "text-white" : "text-gray-400"} hover:text-primary`}>Home</Link>
+                        <Link to="#"
+                              className={`${pathname === "/new" ? "text-white" : "text-gray-400"} ms-4 hover:text-primary`}>New</Link>
+                        <Link to="#"
+                              className={`${pathname === "/popular" ? "text-white" : "text-gray-400"} ms-4 hover:text-primary`}>Popular</Link>
                     </nav>
                     <Link to="/favorites">
-                        <Heart className={`${pathname === "/favorites" ? "text-white" : "text-gray-400"} hover:text-primary cursor-pointer ms-4`}/>
+                        <Heart
+                            className={`${pathname === "/favorites" ? "text-white" : "text-gray-400"} hover:text-primary cursor-pointer ms-4`}/>
                     </Link>
                 </div>
             </div>
