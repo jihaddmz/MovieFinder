@@ -8,12 +8,10 @@ import likedMovieAction from "../state/actions/likedMovieAction.ts";
 import {AppDispatch, RootState} from "../state/store.ts";
 import fetchFavoritesAction from "../state/actions/fetchFavoritesAction.ts";
 import fetchMoviesAction from "../state/actions/fetchMoviesAction.ts";
-import {useNavigate} from "react-router-dom";
 
 const Home = () => {
-    const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
-    const {likedMovies} = useSelector((state: RootState) => state.likes);
+    const {likedMovies, error: likesError} = useSelector((state: RootState) => state.likes);
     const {movies, featured, loading, error} = useSelector((state: RootState) => state.movies);
     const [search, setSearch] = useState("");
     const [prevSearch, setPrevSearch] = useState("");
@@ -29,11 +27,13 @@ const Home = () => {
     }, [])
 
     useEffect(() => {
-        if (error) {
+        const currentError = error ? error : likesError;
+        if (currentError) {
             // alert(error);
-            navigate("/error", {state: {statusCode: 500, message: error}});
+            alert(currentError);
+            // navigate("/error", {state: {statusCode: 500, message: currentError}});
         }
-    }, [error, navigate])
+    }, [error, likesError])
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
