@@ -1,9 +1,9 @@
-// noinspection SqlNoDataSourceInspection
 
 import db from '../config/db'
 import {fetchMoviesApi} from "../api/api";
 import {NextFunction, Request, Response} from "express";
 import {RowDataPacket} from "mysql2";
+import {Movie} from "../types/types";
 
 export const saveMoviesToDB = async (req: Request, res: Response, next: NextFunction) => {
 

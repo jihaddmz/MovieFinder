@@ -1,4 +1,6 @@
-type Movie = {
+import {RowDataPacket} from "mysql2";
+
+export type Movie = {
     poster_path: string;
     adult: boolean;
     overview: string;
@@ -15,10 +17,11 @@ type Movie = {
     vote_average: number;
 }
 
-type User = {
+ export interface User extends RowDataPacket {
     id: number;
     name: string;
     email: string;
+    password: string;
 }
 
 type LikedMovie = {
