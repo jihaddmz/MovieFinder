@@ -40,7 +40,7 @@ export const signIn = async (req: Request, res: Response, next: NextFunction) =>
             // expiresIn: '1d'
         });
 
-        res.status(200).json({token});
+        res.status(200).json({token: token, userId: user.id, name: user.name});
     } catch (e) {
         next(e);
     }

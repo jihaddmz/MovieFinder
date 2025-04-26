@@ -8,6 +8,7 @@ import likedMovieAction from "../state/actions/likedMovieAction.ts";
 import {AppDispatch, RootState} from "../state/store.ts";
 import fetchFavoritesAction from "../state/actions/fetchFavoritesAction.ts";
 import fetchMoviesAction from "../state/actions/fetchMoviesAction.ts";
+import {isSignedIn} from "../config/helpers.ts";
 
 const Home = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -21,8 +22,8 @@ const Home = () => {
             dispatch(fetchMoviesAction(""));
         }
 
-        if (likedMovies.length === 0) {
-            dispatch(fetchFavoritesAction(1));
+        if (likedMovies.length === 0 && isSignedIn()) {
+            dispatch(fetchFavoritesAction(Number(localStorage.getItem("userId"))));
         }
     }, [])
 
@@ -80,11 +81,15 @@ const Home = () => {
                                         <ItemMovie key={movie.id} movie={movie}
                                                    isFavorite={likedMovies.find((mov) => movie.id === mov.id) != null}
                                                    onLikeClick={(clickedMovie, actionType) => {
-                                                       dispatch(likedMovieAction({
-                                                           movieId: clickedMovie.id,
-                                                           userId: 1,
-                                                           goal: actionType
-                                                       }))
+                                                       if (isSignedIn()) {
+                                                           dispatch(likedMovieAction({
+                                                               movieId: clickedMovie.id,
+                                                               userId: 1,
+                                                               goal: actionType
+                                                           }))
+                                                       } else {
+                                                           alert("You have to sign in before!")
+                                                       }
                                                    }}/>
                                     </div>
                                 ))

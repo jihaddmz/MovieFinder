@@ -7,3 +7,7 @@ export const checkForApiError = async (response: Response) => {
         throw Error((await response.json()).message);
     }
 }
+
+export const isSignedIn = () => {
+    return localStorage.getItem("token") !== null;
+}

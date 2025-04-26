@@ -14,3 +14,9 @@ export type Movie = {
     video: boolean;
     vote_average: number;
 }
+
+export type SignInData = {
+    token: string;
+    userId: number;
+    name: string;
+}

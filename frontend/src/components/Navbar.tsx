@@ -1,10 +1,12 @@
-import {CircleUserRound, Film, Heart, Menu, X} from "lucide-react";
+import {CircleUserRound, Film, Heart, Menu, User, X} from "lucide-react";
 import {useState} from "react";
 import {Link, useLocation} from "react-router-dom";
 import AuthModal from "./AuthModal.tsx";
+import {isSignedIn} from "../config/helpers.ts";
 
 const Navbar = () => {
     const [mobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
     const [isAuthModalVisible, setAuthModalVisibility] = useState(false)
     const {pathname} = useLocation();
 
@@ -44,16 +46,32 @@ const Navbar = () => {
                         <Heart
                             className={`${pathname === "/favorites" ? "text-white" : "text-gray-400"} hover:text-primary cursor-pointer`}/>
                     </Link>
-                    <button
-                        onClick={() => {
-                            setMobileMenuIsOpen(false);
-                            setAuthModalVisibility(true);
-                        }}
-                        className="text-white flex bg-primary justify-center items-center py-2 rounded-xl px-10 cursor-pointer hover:bg-primary/80">
-                        <CircleUserRound className="me-2"/>Sign In
-                    </button>
+                    {!isSignedIn() && (
+                        <button
+                            onClick={() => {
+                                setMobileMenuIsOpen(false);
+                                setAuthModalVisibility(true);
+                            }}
+                            className="text-white flex bg-primary justify-center items-center py-2 rounded-xl px-10 cursor-pointer hover:bg-primary/80">
+                            <CircleUserRound className="me-2"/>Sign In
+                        </button>
+                    )}
+
+                    {isSignedIn() && (
+                        <div className="rounded-full bg-primary text-white p-2 cursor-pointer"
+                             onClick={() => setIsProfileModalOpen((prevState) => !prevState)}>
+                            <User/>
+                        </div>
+                    )}
                 </div>
             </div>
+
+            {isProfileModalOpen && (
+                <div className="absolute right-0 bg-background rounded-b-lg py-3 px-5">
+                    <p className="text-white">Your Name: {localStorage.getItem("name")}</p>
+                    <p className="text-red-600 mt-5 text-center cursor-pointer hover:text-red-500"> Sign out</p>
+                </div>
+            )}
 
             {/*    Show the mobile nav menu if it has been toggled*/}
             {mobileMenuIsOpen && (
@@ -62,14 +80,25 @@ const Navbar = () => {
                         <Link to="/" className="text-white block border-b py-3">Home</Link>
                         <Link to="#" className="text-white block border-b py-3">New</Link>
                         <Link to="#" className="text-white block border-b py-3">Popular</Link>
-                        <button
-                            onClick={() => {
-                                setMobileMenuIsOpen(false);
-                                setAuthModalVisibility(true);
-                            }}
-                            className="text-white flex bg-primary min-w-full justify-center items-center mt-3 py-2 rounded-lg">
-                            <CircleUserRound className="me-2"/>Sign In
-                        </button>
+
+                        {isSignedIn() && (
+                            <div className="mt-3">
+                                <p className="text-white">Signed in as: {localStorage.getItem("name")}</p>
+                                <p className="text-red-600 mt-2 cursor-pointer hover:text-red-500"> Sign
+                                    out</p>
+                            </div>
+                        )}
+
+                        {!isSignedIn() && (
+                            <button
+                                onClick={() => {
+                                    setMobileMenuIsOpen(false);
+                                    setAuthModalVisibility(true);
+                                }}
+                                className="text-white flex bg-primary min-w-full justify-center items-center mt-3 py-2 rounded-lg">
+                                <CircleUserRound className="me-2"/>Sign In
+                            </button>
+                        )}
                     </nav>
                 </div>
             )}

@@ -1,4 +1,4 @@
-import {Movie} from "../types/Movie.ts";
+import {Movie, SignInData} from "../types/Movie.ts";
 import {checkForApiError} from "../config/helpers.ts";
 
 const options = {
@@ -6,7 +6,7 @@ const options = {
     headers: {
         'Content-Type': 'application/json',
         accept: 'application/json',
-        authorization: 'Bearer ',
+        authorization: `Bearer ${localStorage.getItem('token')}`,
     }
 }
 
@@ -43,4 +43,28 @@ export const deleteLikedMovieApi = async (userId: number, movieId: number): Prom
     });
     await checkForApiError(result)
     return (await result.json()).movie;
+}
+
+export const signUpUser = async (name: string, email: string, password: string) => {
+    const result = await fetch(`${options.baseURL}/users/signup`, {
+        method: "POST",
+        headers: options.headers,
+        body: JSON.stringify({name: name, email: email, password: password})
+    });
+
+    await checkForApiError(result)
+
+    return (await result.json());
+}
+
+export const signInUser = async (email: string, password: string) => {
+    const result = await fetch(`${options.baseURL}/users/signin`, {
+        method: "POST",
+        headers: options.headers,
+        body: JSON.stringify({email: email, password: password})
+    });
+
+    await checkForApiError(result)
+
+    return (await result.json()) as SignInData;
 }
