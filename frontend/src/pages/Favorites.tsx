@@ -5,14 +5,15 @@ import fetchFavoritesAction from "../state/actions/fetchFavoritesAction.ts";
 import ItemMovie from "../components/ItemMovie.tsx";
 import Loader from "../components/Loader.tsx";
 import likedMovieAction from "../state/actions/likedMovieAction.ts";
+import {isSignedIn} from "../config/helpers.ts";
 
 const Favorites = () => {
     const dispatch = useDispatch<AppDispatch>();
     const {likedMovies, loading, error} = useSelector((state: RootState) => state.likes);
 
     useEffect(() => {
-        if (likedMovies.length === 0)
-            dispatch(fetchFavoritesAction(1)); // static user id to 1
+        if (likedMovies.length === 0 && isSignedIn())
+            dispatch(fetchFavoritesAction(Number(localStorage.getItem("userId")))); // static user id to 1
     }, [])
 
     useEffect(() => {
@@ -45,7 +46,7 @@ const Favorites = () => {
                                         <ItemMovie key={movie.id} movie={movie} isFavorite={true}
                                                    onLikeClick={(clickedMovie, actionType) => {
                                                        dispatch(likedMovieAction({
-                                                           userId: 1,
+                                                           userId: Number(localStorage.getItem("userId")),
                                                            movieId: clickedMovie.id,
                                                            goal: actionType
                                                        }))

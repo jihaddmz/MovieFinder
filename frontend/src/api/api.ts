@@ -1,12 +1,14 @@
 import {Movie, SignInData} from "../types/Movie.ts";
 import {checkForApiError} from "../config/helpers.ts";
 
+const token = localStorage.getItem("token");
 const options = {
-    baseURL: 'http://192.168.0.135:3000/api',
+    baseURL: 'http://192.168.0.135:8080/api',
     headers: {
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
         accept: 'application/json',
-        authorization: `Bearer ${localStorage.getItem('token')}`,
+    ...(token && { Authorization: `Bearer ${token}` }),
     }
 }
 

@@ -23,6 +23,7 @@ const Home = () => {
         }
 
         if (likedMovies.length === 0 && isSignedIn()) {
+            console.log(`user id is ${localStorage.getItem("userId")}`)
             dispatch(fetchFavoritesAction(Number(localStorage.getItem("userId"))));
         }
     }, [])
@@ -84,7 +85,7 @@ const Home = () => {
                                                        if (isSignedIn()) {
                                                            dispatch(likedMovieAction({
                                                                movieId: clickedMovie.id,
-                                                               userId: 1,
+                                                               userId: Number(localStorage.getItem("userId")),
                                                                goal: actionType
                                                            }))
                                                        } else {

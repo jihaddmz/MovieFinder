@@ -10,6 +10,13 @@ const Navbar = () => {
     const [isAuthModalVisible, setAuthModalVisibility] = useState(false)
     const {pathname} = useLocation();
 
+    const logOut = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("name");
+        window.location.reload();
+    }
+
     return (
         <div className="min-w-full sticky top-0 z-10 navbar">
 
@@ -69,7 +76,7 @@ const Navbar = () => {
             {isProfileModalOpen && (
                 <div className="absolute right-0 bg-background rounded-b-lg py-3 px-5">
                     <p className="text-white">Your Name: {localStorage.getItem("name")}</p>
-                    <p className="text-red-600 mt-5 text-center cursor-pointer hover:text-red-500"> Sign out</p>
+                    <p className="text-red-600 mt-5 text-center cursor-pointer hover:text-red-500" onClick={logOut}> Sign out</p>
                 </div>
             )}
 
@@ -84,8 +91,7 @@ const Navbar = () => {
                         {isSignedIn() && (
                             <div className="mt-3">
                                 <p className="text-white">Signed in as: {localStorage.getItem("name")}</p>
-                                <p className="text-red-600 mt-2 cursor-pointer hover:text-red-500"> Sign
-                                    out</p>
+                                <p className="text-red-600 mt-2 cursor-pointer hover:text-red-500" onClick={logOut}> Sign out</p>
                             </div>
                         )}
 
