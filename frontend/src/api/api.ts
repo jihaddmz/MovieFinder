@@ -3,10 +3,9 @@ import {checkForApiError} from "../config/helpers.ts";
 
 const token = localStorage.getItem("token");
 const options = {
-    baseURL: 'http://192.168.0.135:8080/api',
+    baseURL: 'http://Movie-finder-java-backend-env.eba-pfech7it.us-east-1.elasticbeanstalk.com/api',
     headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
         accept: 'application/json',
     ...(token && { Authorization: `Bearer ${token}` }),
     }
