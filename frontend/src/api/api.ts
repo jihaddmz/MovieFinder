@@ -3,7 +3,7 @@ import {checkForApiError} from "../config/helpers.ts";
 
 const token = localStorage.getItem("token");
 const options = {
-    baseURL: 'https://Movie-finder-java-backend-env.eba-pfech7it.us-east-1.elasticbeanstalk.com/api',
+    baseURL: 'http://Movie-finder-java-backend-env.eba-pfech7it.us-east-1.elasticbeanstalk.com/api',
     headers: {
         'Content-Type': 'application/json',
         accept: 'application/json',
