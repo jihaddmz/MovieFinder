@@ -1,6 +1,6 @@
 # MovieFinder
 
-This is a full stack web project, using Reactjs, Nodejs and MySQL.
+This is a full stack web project, using Reactjs, Nodejs, Spring Boot and MySQL.
 
 
 
