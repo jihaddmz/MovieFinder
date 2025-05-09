@@ -11,6 +11,7 @@ import fetchSearchMoviesAction from "../state/actions/fetchSearchMoviesAction.ts
 import {isSignedIn} from "../config/helpers.ts";
 import fetchMoviesAction from "../state/actions/fetchMoviesAction.ts";
 import {incrementPage, resetSearchedMovies} from "../state/slices/moviesSlice.ts";
+import ErrorAlert from "../components/ErrorAlert.tsx";
 
 const Home = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -22,26 +23,23 @@ const Home = () => {
         page,
         hasMoreMovies,
         loading,
-        error
+        error: moviesError,
     } = useSelector((state: RootState) => state.movies);
     const [search, setSearch] = useState("");
     const element = useRef<HTMLDivElement>(null);
     const observer = useRef<IntersectionObserver | null>(null);
     const hasFetched = useRef(false)
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        setError(likesError ? likesError : moviesError ? moviesError : null);
+    }, [likesError, moviesError]);
 
     useEffect(() => {
         if (likedMovies.length === 0 && isSignedIn()) {
             dispatch(fetchFavoritesAction(Number(localStorage.getItem("userId"))));
         }
     }, [])
-
-    useEffect(() => {
-        const currentError = error ? error : likesError;
-        if (currentError) {
-            alert(currentError);
-            // navigate("/error", {state: {statusCode: 500, message: currentError}});
-        }
-    }, [error, likesError])
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -86,6 +84,8 @@ const Home = () => {
                 <Loader/>
             )}
 
+            {error && <ErrorAlert text={error} onClick={() => setError(null)} />}
+
             {featured && (
                 <FeatureMovie
                     movie={featured}/>
@@ -118,9 +118,8 @@ const Home = () => {
                                                                userId: Number(localStorage.getItem("userId")),
                                                                goal: actionType
                                                            }))
-                                                       } else {
-                                                           alert("You have to sign in before!")
-                                                       }
+                                                       } else
+                                                           setError("You should sign in before!")
                                                    }}/>
                                     </div>
                                 })
@@ -160,7 +159,7 @@ const Home = () => {
                                                                goal: actionType
                                                            }))
                                                        } else {
-                                                           alert("You have to sign in before!")
+                                                           setError("You should sign in before!")
                                                        }
                                                    }}/>
                                     </div>
