@@ -5,6 +5,7 @@ import fetchMoviesAction from "../actions/fetchMoviesAction.ts";
 
 interface Props {
     movies: Movie[],
+    searchedMovies: Movie[],
     page: number,
     featured: Movie | null,
     hasMoreMovies: boolean,
@@ -14,6 +15,7 @@ interface Props {
 
 const initialState: Props = {
     movies: [],
+    searchedMovies: [],
     page: 0,
     hasMoreMovies: true,
     featured: null,
@@ -27,7 +29,12 @@ const moviesSlice = createSlice({
     reducers: {
         incrementPage: (state) => {
             state.page += 1;
+        },
+
+        resetSearchedMovies: (state) => {
+            state.searchedMovies = [];
         }
+
     },
     extraReducers: (builder) => {
         builder
@@ -42,10 +49,7 @@ const moviesSlice = createSlice({
             .addCase(fetchSearchMoviesAction.fulfilled, (state, action) => {
                 state.loading = false;
                 state.error = null;
-                state.movies = action.payload
-                if (state.featured == null) {
-                    state.featured = action.payload.find(movie => movie.title.toLowerCase() === "The Shawshank redemption".toLowerCase())!
-                }
+                state.searchedMovies = action.payload
             })
 
             .addCase(fetchMoviesAction.pending, (state) => {
@@ -71,5 +75,5 @@ const moviesSlice = createSlice({
     }
 })
 
-export const { incrementPage } = moviesSlice.actions;
+export const { incrementPage, resetSearchedMovies } = moviesSlice.actions;
 export default moviesSlice.reducer;

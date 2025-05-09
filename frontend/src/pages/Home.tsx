@@ -10,13 +10,14 @@ import fetchFavoritesAction from "../state/actions/fetchFavoritesAction.ts";
 import fetchSearchMoviesAction from "../state/actions/fetchSearchMoviesAction.ts";
 import {isSignedIn} from "../config/helpers.ts";
 import fetchMoviesAction from "../state/actions/fetchMoviesAction.ts";
-import {incrementPage} from "../state/slices/moviesSlice.ts";
+import {incrementPage, resetSearchedMovies} from "../state/slices/moviesSlice.ts";
 
 const Home = () => {
     const dispatch = useDispatch<AppDispatch>();
     const {likedMovies, error: likesError} = useSelector((state: RootState) => state.likes);
     const {
         movies,
+        searchedMovies,
         featured,
         page,
         hasMoreMovies,
@@ -24,7 +25,6 @@ const Home = () => {
         error
     } = useSelector((state: RootState) => state.movies);
     const [search, setSearch] = useState("");
-    const [prevSearch, setPrevSearch] = useState("");
     const element = useRef<HTMLDivElement>(null);
     const observer = useRef<IntersectionObserver | null>(null);
     const hasFetched = useRef(false)
@@ -47,10 +47,9 @@ const Home = () => {
         const timeoutId = setTimeout(() => {
             if (search)
                 dispatch(fetchSearchMoviesAction(search));
-            else if (prevSearch) { // ensuring that this call happens only when the user has searched before, so we reset the data state
-                dispatch(fetchSearchMoviesAction(""));
+            else {
+                dispatch(resetSearchedMovies());
             }
-            setPrevSearch(search);
         }, 700)
 
         return () => clearTimeout(timeoutId);
@@ -92,7 +91,49 @@ const Home = () => {
                     movie={featured}/>
             )}
 
-            {movies.length > 0 && (
+            {/* displaying the movies retrieved after searching*/}
+            {searchedMovies.length > 0 && (
+                <section>
+
+                    <div className="mt-10 w-full max-md:px-10 md:w-1/2 md:translate-x-1/2">
+                        <SearchBar value={search} onChange={setSearch}/>
+                    </div>
+
+                    <br/>
+
+                    <div className="p-5">
+                        <h1 className="text-white font-bold text-3xl">Browse Movies</h1>
+                        <div
+                            className="mt-7 flex-col sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                            {
+                                searchedMovies.map((movie) => {
+                                    return <div key={movie.id}
+                                                className="max-sm:flex max-sm:justify-center max-sm:mb-5">
+                                        <ItemMovie movie={movie}
+                                                   isFavorite={likedMovies.find((mov) => movie.id === mov.id) != null}
+                                                   onLikeClick={(clickedMovie, actionType) => {
+                                                       if (isSignedIn()) {
+                                                           dispatch(likedMovieAction({
+                                                               movieId: clickedMovie.id,
+                                                               userId: Number(localStorage.getItem("userId")),
+                                                               goal: actionType
+                                                           }))
+                                                       } else {
+                                                           alert("You have to sign in before!")
+                                                       }
+                                                   }}/>
+                                    </div>
+                                })
+                            }
+                        </div>
+                    </div>
+
+                </section>
+            )}
+
+
+            {/* displaying the movies fetched*/}
+            {movies.length > 0 && searchedMovies.length == 0 && (
                 <section>
 
                     <div className="mt-10 w-full max-md:px-10 md:w-1/2 md:translate-x-1/2">

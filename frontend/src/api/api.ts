@@ -20,7 +20,7 @@ export const fetchMoviesApi = async (page: number): Promise<MoviesPageResponse> 
 }
 
 export const fetchSearchMoviesApi = async (query: string): Promise<Movie[]> => {
-    const result = await fetch(`${options.baseURL}/search/${query}`, {headers: options.headers});
+    const result = await fetch(`${options.baseURL}/movies/search?query=${query}`, {headers: options.headers});
     await checkForApiError(result)
     return (await result.json()).results;
 }
