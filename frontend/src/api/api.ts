@@ -1,9 +1,9 @@
-import {Movie, SignInData} from "../types/Movie.ts";
+import {Movie, MoviesPageResponse, SignInData} from "../types/Movie.ts";
 import {checkForApiError} from "../config/helpers.ts";
 
 const token = localStorage.getItem("token");
 const options = {
-    baseURL: 'http://Movie-finder-java-backend-env.eba-pfech7it.us-east-1.elasticbeanstalk.com/api',
+    baseURL: 'http://localhost:8080/api',
     headers: {
         'Content-Type': 'application/json',
         accept: 'application/json',
@@ -11,9 +11,16 @@ const options = {
     }
 }
 
-export const fetchMoviesApi = async (query: string = ""): Promise<Movie[]> => {
-    const endpoint = query ? "movies?query=" + query : "movies";
-    const result = await fetch(`${options.baseURL}/${endpoint}`, {headers: options.headers});
+export const fetchMoviesApi = async (page: number): Promise<MoviesPageResponse> => {
+    console.log(`Entered in api ${page}`)
+    const result = await fetch(`${options.baseURL}/movies?page=${page}`, {headers: options.headers});
+    await checkForApiError(result)
+
+    return (await result.json());
+}
+
+export const fetchSearchMoviesApi = async (query: string): Promise<Movie[]> => {
+    const result = await fetch(`${options.baseURL}/search/${query}`, {headers: options.headers});
     await checkForApiError(result)
     return (await result.json()).results;
 }

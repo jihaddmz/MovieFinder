@@ -1,17 +1,18 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {fetchMoviesApi} from "../../api/api.ts";
 
-const fetchMovie = createAsyncThunk(
+const fetchMovies = createAsyncThunk(
     "fetchMovies",
-    async (query: string = "", {rejectWithValue}) => {
+    async (page: number = 0, {rejectWithValue}) => {
         try {
-            const result = await fetchMoviesApi(query);
+            const result = await fetchMoviesApi(page);
+            console.log(`total page is ${result.page.totalPages}`)
             return result;
         } catch (e) {
-            const errorMsg = e instanceof Error ? e.message : "Error while fetching favorites.";
+            const errorMsg = e instanceof Error ? e.message : "Error while fetching movies.";
             return rejectWithValue(errorMsg)
         }
     }
 )
 
-export default fetchMovie;
+export default fetchMovies;

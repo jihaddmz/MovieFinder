@@ -20,3 +20,21 @@ export type SignInData = {
     userId: number;
     name: string;
 }
+
+export type PageResponse<T> = {
+    content: T[];
+    totalPages: number;
+    number: number;
+};
+
+type PageInfo = {
+    size: number;
+    totalElements: number;
+    totalPages: number;
+    number: number;
+};
+
+export type MoviesPageResponse = {
+    content: Movie[]
+    page: PageInfo;
+};

@@ -1,29 +1,36 @@
 import ItemMovie from "../components/ItemMovie.tsx";
 import FeatureMovie from "../components/FeatureMovie.tsx";
 import SearchBar from "../components/SearchBar.tsx";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import Loader from "../components/Loader.tsx";
 import likedMovieAction from "../state/actions/likedMovieAction.ts";
 import {AppDispatch, RootState} from "../state/store.ts";
 import fetchFavoritesAction from "../state/actions/fetchFavoritesAction.ts";
-import fetchMoviesAction from "../state/actions/fetchMoviesAction.ts";
+import fetchSearchMoviesAction from "../state/actions/fetchSearchMoviesAction.ts";
 import {isSignedIn} from "../config/helpers.ts";
+import fetchMoviesAction from "../state/actions/fetchMoviesAction.ts";
+import {incrementPage} from "../state/slices/moviesSlice.ts";
 
 const Home = () => {
     const dispatch = useDispatch<AppDispatch>();
     const {likedMovies, error: likesError} = useSelector((state: RootState) => state.likes);
-    const {movies, featured, loading, error} = useSelector((state: RootState) => state.movies);
+    const {
+        movies,
+        featured,
+        page,
+        hasMoreMovies,
+        loading,
+        error
+    } = useSelector((state: RootState) => state.movies);
     const [search, setSearch] = useState("");
     const [prevSearch, setPrevSearch] = useState("");
+    const element = useRef<HTMLDivElement>(null);
+    const observer = useRef<IntersectionObserver | null>(null);
+    const hasFetched = useRef(false)
 
     useEffect(() => {
-        if (movies.length === 0) {
-            dispatch(fetchMoviesAction(""));
-        }
-
         if (likedMovies.length === 0 && isSignedIn()) {
-            console.log(`user id is ${localStorage.getItem("userId")}`)
             dispatch(fetchFavoritesAction(Number(localStorage.getItem("userId"))));
         }
     }, [])
@@ -31,7 +38,6 @@ const Home = () => {
     useEffect(() => {
         const currentError = error ? error : likesError;
         if (currentError) {
-            // alert(error);
             alert(currentError);
             // navigate("/error", {state: {statusCode: 500, message: currentError}});
         }
@@ -40,15 +46,38 @@ const Home = () => {
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             if (search)
-                dispatch(fetchMoviesAction(search));
+                dispatch(fetchSearchMoviesAction(search));
             else if (prevSearch) { // ensuring that this call happens only when the user has searched before, so we reset the data state
-                dispatch(fetchMoviesAction(""));
+                dispatch(fetchSearchMoviesAction(""));
             }
             setPrevSearch(search);
         }, 700)
 
         return () => clearTimeout(timeoutId);
     }, [search, dispatch])
+
+    useEffect(() => {
+        if (!hasFetched.current || page != 0) { // so we are ensuring this is executed only one time per screen visit or when page got changed
+            hasFetched.current = true;
+            dispatch(fetchMoviesAction(page))
+        }
+    }, [page, dispatch]);
+
+    // This is the last movie div that is being observed when entering in to viewport, and has more movies to fetch, increment the page
+    // triggering fetching of movies. Before that, if its currently loading, exit and if observing div element before, cancel
+    // that and re-observe the last movie div
+    const lastMovieRef = useCallback((node: HTMLDivElement | null) => {
+        if (loading) return;
+        if (observer.current) observer.current.disconnect();
+
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMoreMovies) {
+                dispatch(incrementPage());
+            }
+        });
+
+        if (node) observer.current.observe(node);
+    }, [loading, hasMoreMovies, dispatch]);
 
     return (
         <div className="relative">
@@ -77,9 +106,10 @@ const Home = () => {
                         <div
                             className="mt-7 flex-col sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             {
-                                movies.map((movie) => (
-                                    <div key={movie.id} className="max-sm:flex max-sm:justify-center max-sm:mb-5">
-                                        <ItemMovie key={movie.id} movie={movie}
+                                movies.map((movie) => {
+                                    return <div ref={lastMovieRef} key={movie.id}
+                                                className="max-sm:flex max-sm:justify-center max-sm:mb-5">
+                                        <ItemMovie movie={movie}
                                                    isFavorite={likedMovies.find((mov) => movie.id === mov.id) != null}
                                                    onLikeClick={(clickedMovie, actionType) => {
                                                        if (isSignedIn()) {
@@ -93,7 +123,7 @@ const Home = () => {
                                                        }
                                                    }}/>
                                     </div>
-                                ))
+                                })
                             }
                         </div>
                     </div>
@@ -102,6 +132,7 @@ const Home = () => {
             )}
 
 
+            <div ref={element} className="h-10"/>
         </div>
     );
 };
