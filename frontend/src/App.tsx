@@ -3,6 +3,7 @@ import Home from "./pages/Home.tsx";
 import Favorites from "./pages/Favorites.tsx";
 import Layout from "./pages/Layout.tsx";
 import Error from "./pages/Error.tsx";
+import Popular from "./pages/Popular.tsx";
 
 function App() {
 
@@ -12,6 +13,7 @@ function App() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home/>}/>
                     <Route path="favorites" element={<Favorites/>}/>
+                    <Route path="popular" element={<Popular />} />
                     <Route path="*" element={<Error />}/>
                 </Route>
             </Routes>

@@ -44,9 +44,7 @@ const Navbar = () => {
                     <nav className="flex items-center gap-4">
                         <Link to="/"
                               className={`${pathname === "/" ? "text-white" : "text-gray-400"} hover:text-primary`}>Home</Link>
-                        <Link to="#"
-                              className={`${pathname === "/new" ? "text-white" : "text-gray-400"} hover:text-primary`}>New</Link>
-                        <Link to="#"
+                        <Link to="/popular"
                               className={`${pathname === "/popular" ? "text-white" : "text-gray-400"} hover:text-primary`}>Popular</Link>
                     </nav>
                     <Link to="/favorites">
@@ -85,8 +83,7 @@ const Navbar = () => {
                 <div className="bg-gray-900 animate-fadeIn shadow-lg absolute min-w-full">
                     <nav className="p-5">
                         <Link to="/" className="text-white block border-b py-3">Home</Link>
-                        <Link to="#" className="text-white block border-b py-3">New</Link>
-                        <Link to="#" className="text-white block border-b py-3">Popular</Link>
+                        <Link to="/popular" className="text-white block border-b py-3">Popular</Link>
 
                         {isSignedIn() && (
                             <div className="mt-3">
