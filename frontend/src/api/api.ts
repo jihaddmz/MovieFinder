@@ -3,7 +3,7 @@ import {checkForApiError} from "../config/helpers.ts";
 
 const token = localStorage.getItem("token");
 const options = {
-    baseURL: 'http://localhost:8080/api',
+    baseURL: 'https://movie-finder-7aoa.onrender.com/api',
     headers: {
         'Content-Type': 'application/json',
         accept: 'application/json',
